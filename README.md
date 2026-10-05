@@ -72,7 +72,7 @@
 
 1. Windows 安装 **Python 3.10+**，按[引擎安装说明](katago_engine/INSTALL.md)准备 KataGo、模型与兼容驱动。
 2. 在项目目录运行下方启动器，等待首次依赖安装，保持窗口开启。
-3. 打开 **http://127.0.0.1:8000**，导入 [复盘演示](examples/review-demo.sgf) 或 [学习演示](examples/study-demo.sgf)。
+3. 打开 http://127.0.0.1:8000，导入 [复盘演示](examples/review-demo.sgf) 或 [学习演示](examples/study-demo.sgf)。
 
 ```powershell
 .\start-product.cmd
