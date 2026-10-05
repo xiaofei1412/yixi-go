@@ -1,0 +1,32 @@
+.venv/
+.venv.unusable-*/
+__pycache__/
+tests/__pycache__/
+product_data/
+.backups/
+.venv-train/
+train_v2_runs/
+train_v2_data/
+
+# Local training artifacts and build outputs (keep the source code).
+data_buffer/
+gtp_logs/
+build/
+dist/
+*.egg-info/
+*.pt
+*.pth
+*.pyd
+training-v2-log.jsonl
+
+# Download the upstream engine/model separately; publish only our configuration.
+katago_engine/*
+!katago_engine/product_analysis.cfg
+!katago_engine/INSTALL.md
+
+# Machine-local editor settings and secrets.
+.vscode/
+.env
+.env.*
+!.env.example
+*.log

@@ -1,0 +1,172 @@
+{
+  "date": "2026-10-05",
+  "protocol": "9x9; paired four-ply openings; swapped colors; greedy policy without MCTS; same pretrained reference; KataGo terminal estimate, 128 visits; not official win rate or Elo",
+  "teacher_games": 200,
+  "teacher_states": 14308,
+  "training_games": 170,
+  "validation_games": 30,
+  "base_parameters": 320251,
+  "pretrain_epochs": 10,
+  "pretrain_updates": 950,
+  "pretrain_top1_percent": [
+    2.91,
+    27.37
+  ],
+  "common_seed": 20291007,
+  "common_games_per_candidate": 200,
+  "common": [
+    {
+      "id": "ppo8",
+      "parameters": 320251,
+      "optimizer_steps": 34,
+      "score_rate": 0.4225,
+      "pair_bootstrap95": [
+        0.365,
+        0.48
+      ],
+      "validation": {
+        "loss": 3.615850476495546,
+        "policy_ce": 2.8517365577978167,
+        "value_mse": 0.738447779783539,
+        "score_mae_points": 6.236871741736206,
+        "ownership_mse": 0.2285756413659948,
+        "policy_top1": 0.2662968092972186,
+        "entropy": 2.6854093325011332,
+        "raw_illegal_mass": 0.6296494599574702
+      }
+    },
+    {
+      "id": "ppo32",
+      "parameters": 320251,
+      "optimizer_steps": 111,
+      "score_rate": 0.4325,
+      "pair_bootstrap95": [
+        0.37,
+        0.495
+      ],
+      "validation": {
+        "loss": 3.6266965526593156,
+        "policy_ce": 2.8508534960541745,
+        "value_mse": 0.7497010886586489,
+        "score_mae_points": 6.677310336258915,
+        "ownership_mse": 0.2329467600396646,
+        "policy_top1": 0.24503005019393828,
+        "entropy": 2.698371211632611,
+        "raw_illegal_mass": 0.6418255657384752
+      }
+    },
+    {
+      "id": "batch512",
+      "parameters": 320251,
+      "optimizer_steps": 36,
+      "score_rate": 0.4975,
+      "pair_bootstrap95": [
+        0.44,
+        0.5575
+      ],
+      "validation": {
+        "loss": 3.5290884583623554,
+        "policy_ce": 2.8495081119166996,
+        "value_mse": 0.6542529288233291,
+        "score_mae_points": 6.050209976818845,
+        "ownership_mse": 0.22802631040303947,
+        "policy_top1": 0.24503005019393828,
+        "entropy": 2.6530895260710765,
+        "raw_illegal_mass": 0.6520619967774115
+      }
+    },
+    {
+      "id": "replay01",
+      "parameters": 320251,
+      "optimizer_steps": 36,
+      "score_rate": 0.5875,
+      "pair_bootstrap95": [
+        0.5275,
+        0.6475
+      ],
+      "validation": {
+        "loss": 3.7133723792244977,
+        "policy_ce": 2.8545302079333457,
+        "value_mse": 0.8329023350955048,
+        "score_mae_points": 7.180995597698266,
+        "ownership_mse": 0.2288076605404961,
+        "policy_top1": 0.24826629614863086,
+        "entropy": 2.7018367355750548,
+        "raw_illegal_mass": 0.6556011047343441
+      }
+    },
+    {
+      "id": "value01",
+      "parameters": 320251,
+      "optimizer_steps": 36,
+      "score_rate": 0.4475,
+      "pair_bootstrap95": [
+        0.3825,
+        0.5125
+      ],
+      "validation": {
+        "loss": 3.5065186226527776,
+        "policy_ce": 2.840485731429983,
+        "value_mse": 0.6408237246964411,
+        "score_mae_points": 5.735801882507952,
+        "ownership_mse": 0.2281011023967287,
+        "policy_top1": 0.2441054079552464,
+        "entropy": 2.72961066290564,
+        "raw_illegal_mass": 0.6460659778123645
+      }
+    },
+    {
+      "id": "isolated",
+      "parameters": 324476,
+      "optimizer_steps": 36,
+      "score_rate": 0.5675,
+      "pair_bootstrap95": [
+        0.505,
+        0.63
+      ],
+      "validation": {
+        "loss": 3.460207280768766,
+        "policy_ce": 2.8443348062738356,
+        "value_mse": 0.5900309778615604,
+        "score_mae_points": 5.116115825902628,
+        "ownership_mse": 0.23574500922604508,
+        "policy_top1": 0.2598243179251847,
+        "entropy": 2.697207616866875,
+        "raw_illegal_mass": 0.6502742428113838
+      }
+    }
+  ],
+  "confirmation_seed": 20301008,
+  "confirmation_games_per_candidate": 200,
+  "confirmation": [
+    {
+      "id": "replay01",
+      "score_rate": 0.5625,
+      "bootstrap95": [
+        0.4975,
+        0.6275
+      ],
+      "wins": 110,
+      "draws": 5,
+      "losses": 85
+    },
+    {
+      "id": "isolated",
+      "score_rate": 0.4925,
+      "bootstrap95": [
+        0.4275,
+        0.555
+      ],
+      "wins": 98,
+      "draws": 1,
+      "losses": 101
+    }
+  ],
+  "replay_earlier_score_rate": 0.4825,
+  "caveats": [
+    "One training seed per configuration; three PPO rounds.",
+    "Validation has 8.9% rows overlapping early training positions.",
+    "Final confirmation CI includes 50%; stable superiority is not established.",
+    "Selection is a budget-bounded engineering decision, not mathematical convergence."
+  ]
+}

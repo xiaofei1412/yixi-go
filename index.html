@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>弈习 · 对弈与复盘</title><link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="/"><span class="brand-mark">弈</span><span>弈习<small>GO STUDY</small></span></a>
+    <p class="sidebar-caption">每一局，都有收获。</p>
+    <button id="newGame" class="primary wide">＋ 开始新对局</button>
+    <button id="importGame" class="outline wide">导入 SGF 棋谱</button>
+    <button id="openStudy" class="outline wide">学习中心 · 错题与复习</button>
+    <input id="sgfFile" type="file" accept=".sgf" hidden>
+    <div class="library-heading"><h2>我的棋谱</h2><button id="refreshLibrary" class="icon" aria-label="刷新棋谱库">↻</button></div>
+    <div id="library" class="library"><p class="muted">正在读取棋谱…</p></div>
+    <footer>棋谱自动保存在本机<br><span>KataGo 提供分析支持</span></footer>
+  </aside>
+  <main>
+    <header class="topbar"><div><span class="eyebrow">YOUR NEXT MOVE</span><h1>对弈与复盘</h1></div><div class="top-actions"><span id="saveState" class="save-state">本地研习空间</span><button id="exportGame" class="outline" title="将当前分支导出为主线，同时保留其他变化与批注" disabled>导出棋谱 ↗</button></div></header>
+    <div id="notice" role="status" aria-live="polite" hidden></div>
+    <div class="workspace">
+      <section class="board-column">
+        <div class="game-heading"><div><span id="modeBadge" class="badge">准备开始</span><h2 id="gameTitle">一方棋盘，一次新的思考</h2><p id="gameMeta">选择对局，或导入一盘值得回看的棋。</p></div><button id="enterReview" class="outline" disabled>进入复盘</button></div>
+        <div class="board-frame"><canvas id="goBoard" width="760" height="760" aria-label="围棋棋盘，点击交叉点落子"></canvas></div>
+        <div id="previewBar" class="preview-bar" hidden><span id="previewLabel"></span><div><button id="pvBack" aria-label="变化上一手">←</button><button id="pvNext" aria-label="变化下一手">→</button><button id="pvClose">返回实战</button></div></div>
+        <div class="turn-row"><span id="turnDot" class="stone-dot"></span><strong id="status">点击“开始新对局”设置棋盘</strong><span id="moveCount">第 0 手</span></div>
+        <div id="playControls" class="controls"><button id="pass" disabled>停着</button><button id="undo" disabled>悔棋</button><button id="retryAI" class="primary" hidden>继续对弈</button><button id="resign" class="text-danger" disabled>认输</button><label class="budget">对手思考<select id="aiVisits"><option value="50">快速 · 50</option><option value="200" selected>标准 · 200</option><option value="800">深入 · 800</option><option value="2000">充分 · 2000</option></select></label></div>
+        <div id="reviewControls" hidden>
+          <div class="navigation"><button id="first" aria-label="回到起点">|←</button><button id="previous" aria-label="上一手">←</button><input id="timeline" aria-label="棋谱进度" type="range" min="0" max="0" value="0"><button id="next" aria-label="下一手">→</button><button id="last" aria-label="到分支末尾">→|</button></div>
+          <div class="branch-row"><span>后续分支</span><div id="branches"></div><button id="reviewPass" class="text-button">停着试下</button><button id="mainline" class="text-button">回到主线起点</button></div>
+          <p class="muted small">在历史局面落子可创建试下分支，原棋谱会保留。方向键 ← → 可逐手浏览。</p>
+        </div>
+        <div id="scoringPanel" class="scoring" hidden><h3>确认终局</h3><p>双方已连续停着。点击棋子可整块标记或取消死子；双活中的活棋请保留。存在争议时，可继续对局处理。</p><strong id="scoreText">标记后点击预览数子</strong><div class="controls"><button id="previewScore">预览数子</button><button id="confirmScore" class="primary">确认结果</button><button id="resumeGame">继续对局</button></div></div>
+        <div id="commentPanel" class="comment" hidden><h3>棋谱批注</h3><p id="comment"></p></div>
+      </section>
+      <aside class="analysis-column">
+        <section class="panel"><div class="panel-title"><h2>局面分析</h2><span class="badge soft">黑方视角</span></div>
+          <div class="analysis-toolbar"><select id="analysisVisits" aria-label="分析精度"><option value="100">快速分析 · 100</option><option value="400" selected>标准分析 · 400</option><option value="1600">深入分析 · 1600</option></select><button id="analyze" class="primary" disabled>分析当前</button></div>
+          <div class="metrics"><div><span>黑棋胜率</span><strong id="winrate">—<small>%</small></strong></div><div><span>预计目差</span><strong id="lead">—</strong></div></div>
+          <div class="winbar"><div id="winbarBlack"></div></div>
+          <p id="analysisNote" class="muted small">分析后查看候选落点与后续变化。</p>
+          <label class="ownership-toggle"><input type="checkbox" id="showOwnership"> 显示领地预测 <span>非终局计分</span></label>
+        </section>
+        <section class="panel"><div class="panel-title"><h2>候选落点</h2><span class="muted small">点击回放变化</span></div><div id="candidates"><div class="empty"><span>◎</span><p>先思考，再看推荐</p><small>分析会保留多个值得比较的选择。</small></div></div></section>
+        <section class="panel"><div class="panel-title"><h2>本分支走势</h2><button id="scan" class="text-button" disabled>全谱初筛</button></div>
+          <svg id="chart" viewBox="0 0 300 125" role="img" aria-label="黑方预计目差曲线"></svg>
+          <p id="scanStatus" class="muted small">初筛会逐局面计算，可随时停止。</p>
+          <div id="mistakes"></div>
+        </section>
+        <section class="panel"><div class="panel-title"><h2>精选学习点</h2><span class="badge soft">先重下，再看答案</span></div>
+          <p class="muted small">先完成全谱初筛，再复核最多 6 个分散的局面，收录最多 3 道练习。也可回到某手棋，单独复核。</p>
+          <div class="analysis-toolbar"><select id="studyColor" aria-label="筛选执棋方"><option value="0">黑白双方</option><option value="1">只看黑方</option><option value="-1">只看白方</option></select><button id="generateStudy" class="primary" disabled>精选本分支</button></div>
+          <div class="controls study-actions"><button id="saveStudy" disabled>复核刚下的一手</button><button id="stopStudy" hidden>停止精选</button></div>
+          <p id="studyProgress" class="muted small" role="status">仅收录复核后预计损失至少 2 目的局面。</p>
+        </section>
+        <p class="analysis-disclaimer">胜率与目差是引擎预测。思考预算表示计算量，不代表对手段位。建议对关键局面增加分析精度。</p>
+      </aside>
+    </div>
+  </main>
+  <dialog id="newDialog"><form id="newForm"><div class="dialog-heading"><div><span class="eyebrow">A FRESH BOARD</span><h2>开始一局新棋</h2></div><button type="button" id="closeDialog" class="icon" aria-label="关闭">×</button></div>
+    <label>使用方式<select id="newMode"><option value="play">与 KataGo 对弈</option><option value="review">自由摆棋复盘</option></select></label>
+    <div class="form-row"><label>棋盘<select id="newSize"><option value="9">9 路 · 快棋</option><option value="13">13 路 · 进阶</option><option value="19" selected>19 路 · 标准</option></select></label><label>执棋<select id="newColor"><option value="1">我执黑 · 先行</option><option value="-1">我执白 · 后行</option></select></label></div>
+    <div class="form-row"><label>让子<select id="newHandicap"><option value="0">不让子</option><option value="2">2 子</option><option value="3">3 子</option><option value="4">4 子</option><option value="5">5 子</option><option value="9">9 子</option></select></label><label>白方贴目<input id="newKomi" type="number" min="-150" max="150" step="0.5" value="7.5" required></label></div>
+    <p class="muted small">中国数子规则，全局同形禁着。让子由执黑方自由放置；贴目为最终补偿，不额外加让子补偿。</p>
+    <p id="newError" class="form-error" role="alert"></p><button id="createGame" class="primary wide" type="submit">开始研习 →</button>
+  </form></dialog>
+  <dialog id="studyDialog" aria-labelledby="studyHeading">
+    <div class="dialog-heading"><div><span class="eyebrow">LEARN FROM YOUR GAMES</span><h2 id="studyHeading">学习中心</h2></div><button id="closeStudy" class="icon" aria-label="关闭练习">×</button></div>
+    <p id="studyError" class="form-error" role="alert"></p>
+    <section id="studyLibrary">
+      <div class="panel-title"><h3>学习概览</h3><select id="studyPeriod" aria-label="学习统计时段"><option value="7">近 7 天</option><option value="30">近 30 天</option><option value="all">全部时间</option></select></div>
+      <div id="studyMetrics" class="study-metrics" aria-live="polite"></div>
+      <p id="studyStatsNote" class="muted small"></p>
+      <details class="study-trend"><summary id="studyTrendTitle">每日练习记录</summary><div id="studyDaily"></div></details>
+      <section class="study-topics"><h3>知识点回顾 <small class="muted">来自你的手动标签</small></h3><div id="studyTopics"></div><p id="studyTopicNote" class="muted small"></p></section>
+      <div class="panel-title"><h3>我的错题</h3><button id="refreshStudy" class="text-button">刷新学习中心</button></div>
+      <p id="studySummary" class="muted small"></p><div class="controls"><button id="studyDue" class="primary">待复习</button><button id="studyAll">全部练习</button><select id="studyTagFilter" aria-label="按知识点筛选"><option value="">全部知识点</option></select></div><p id="studyFilterNote" class="muted small" role="status"></p><div id="studyList"></div>
+    </section>
+    <section id="studyExercise" hidden>
+      <p id="studyPrompt"></p>
+      <div class="study-layout"><div class="board-frame"><canvas id="studyBoard" width="760" height="760" aria-label="重下练习棋盘，点击选点后提交；也可在右侧输入坐标"></canvas></div><div>
+        <p class="muted small">先独立选一手。提交后可查看答案与个人笔记，也可回到原局面阅读棋谱批注。练习不会改变原棋谱。</p>
+        <div id="studyInput"><label for="studyCoordinate">落点坐标</label><div class="analysis-toolbar"><input id="studyCoordinate" type="text" maxlength="4" placeholder="如 D4" autocomplete="off"><button id="studySelect">选点</button></div><p id="studySelection" role="status">尚未选点</p><div class="controls"><button id="studyPass">选择停着</button><button id="studySubmit" class="primary" disabled>提交这一手</button><button id="studyReveal">看答案</button></div></div>
+        <div id="studyFeedback" hidden><h3 id="studyVerdict"></h3><p id="studyComparison"></p><p id="studyQuality" class="muted small"></p><div class="controls"><button id="studyPvBack" aria-label="推荐变化上一手">←</button><span id="studyPvLabel"></span><button id="studyPvNext" aria-label="推荐变化下一手">→</button></div><p id="studySchedule" class="muted small"></p><label for="studyNote">给下次复习的笔记</label><textarea id="studyNote" rows="4" maxlength="1000" placeholder="当时忽略了什么？下次先检查什么？"></textarea><button id="saveStudyNote">保存笔记</button><span id="studyNoteStatus" class="muted small" role="status"></span>
+          <button id="openStudyComparison" class="primary wide study-actions">对照实战、重下与推荐变化</button>
+          <fieldset class="study-tags"><legend>知识点标签 · 手动选择，最多 3 个</legend><div id="studyTagChoices"></div><button id="saveStudyTags">保存标签</button><span id="studyTagStatus" class="muted small" role="status"></span></fieldset>
+          <details class="study-history"><summary>本题最近 10 次记录</summary><ol id="studyHistory"></ol></details><button id="reloadStudyLearning" class="text-button">刷新本题记录</button>
+          <button id="studySource" class="outline wide study-actions">回原局面对照分析</button><button id="studyNextDue" class="primary wide">下一道待复习</button>
+        </div>
+        <button id="studyBack" class="outline wide study-actions">返回练习列表</button>
+      </div></div>
+      <section id="comparisonPanel" class="comparison-panel" hidden aria-labelledby="comparisonHeading">
+        <div class="panel-title"><div><h3 id="comparisonHeading">同一局面，看看三种后续</h3><p id="comparisonMeta" class="muted small"></p></div><button id="closeStudyComparison" class="text-button">收起对照</button></div>
+        <p class="muted small">棋谱后续来自收录时选定的分支；引擎推演是假设变化。目差只对应首手选择的分析，拖动回放不会重新分析每一帧。橙圈仅表示棋子分布不同。</p>
+        <div class="comparison-controls"><button id="comparisonFirst">起点</button><button id="comparisonBack" aria-label="对照上一手">←</button><input id="comparisonTimeline" type="range" min="0" max="0" value="0" aria-label="三线对照步数"><button id="comparisonNext" aria-label="对照下一手">→</button><label><input id="comparisonDifferences" type="checkbox" checked> 标出与推荐线的差异</label></div>
+        <p id="comparisonPosition" class="muted small" role="status"></p>
+        <div class="comparison-grid">
+          <article class="comparison-card"><div class="comparison-card-heading"><h3>实战落点</h3><select id="comparisonActualMode" aria-label="实战栏后续来源"><option value="recorded">棋谱记录的后续</option><option value="actual">该落点的引擎推演</option></select><p id="comparisonActualMetric" class="muted small"></p></div><canvas id="comparisonActualBoard" width="760" height="760" aria-label="实战后续对照棋盘"></canvas><p id="comparisonActualPosition" class="small"></p><p id="comparisonActualWarning" class="form-error"></p></article>
+          <article class="comparison-card"><div class="comparison-card-heading"><h3>我的重下 · 引擎推演</h3><p id="comparisonAnswerMetric" class="muted small"></p></div><canvas id="comparisonAnswerBoard" width="760" height="760" aria-label="我的重下变化棋盘"></canvas><p id="comparisonAnswerPosition" class="small"></p><p id="comparisonAnswerWarning" class="form-error"></p></article>
+          <article class="comparison-card"><div class="comparison-card-heading"><h3>引擎推荐 · 假设变化</h3><p id="comparisonRecommendedMetric" class="muted small"></p></div><canvas id="comparisonRecommendedBoard" width="760" height="760" aria-label="引擎推荐变化棋盘"></canvas><p id="comparisonRecommendedPosition" class="small"></p><p id="comparisonRecommendedWarning" class="form-error"></p></article>
+        </div>
+        <p id="comparisonCaveat" class="muted small"></p>
+      </section>
+    </section>
+  </dialog>
+</body>
+</html>
