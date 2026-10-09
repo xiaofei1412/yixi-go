@@ -8,7 +8,6 @@ import threading
 import uuid
 from datetime import datetime, timedelta, timezone
 from contextlib import asynccontextmanager, contextmanager
-from pathlib import Path
 from typing import Literal
 
 from fastapi import FastAPI, HTTPException
@@ -18,9 +17,10 @@ from go_game import Game, action_from_coordinate, coordinate
 from katago_service import KataGoEngine, EngineError
 from study_stats import summarize_study, attempt_record
 from study_compare import candidate_line, recorded_continuation, replay_line
+from product_paths import RESOURCE_ROOT, DATA_DIR
 
-ROOT = Path(__file__).resolve().parent
-DB_PATH = ROOT / "product_data/games.sqlite3"
+ROOT = RESOURCE_ROOT
+DB_PATH = DATA_DIR / "games.sqlite3"
 db_lock = threading.RLock()
 engine = KataGoEngine()
 

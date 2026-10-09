@@ -5,6 +5,7 @@ tests/__pycache__/
 product_data/
 .backups/
 .venv-train/
+.venv-build/
 train_v2_runs/
 train_v2_data/
 

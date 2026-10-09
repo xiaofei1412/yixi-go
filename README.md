@@ -3,6 +3,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/xiaofei1412/yixi-go/releases/latest">Windows 下载</a> ·
   <a href="README-product.md">产品使用</a> ·
   <a href="README-train.md">训练实验</a> ·
   <a href="docs/PROJECT.md">项目经历</a> 
@@ -70,6 +71,13 @@
 
 ## 开始体验
 
+**免安装版：**[下载 Windows x64 压缩包](https://github.com/xiaofei1412/yixi-go/releases/download/v1.0.0/YixiGo-v1.0.0-windows-x64.zip)，完整解压后双击 `YixiGo.exe`，浏览器自动打开。
+
+内含 Python、KataGo 和模型；需要 Windows 10/11 x64 与支持 OpenCL 的显卡驱动。首次启动创建空库，棋谱独立保存在当前账户的 `%LOCALAPPDATA%\YixiGo`，没有云同步。首次分析可能需要显卡调优。详情见[桌面版说明](docs/WINDOWS.md)。
+
+<details>
+<summary>从源码运行 / 参与开发</summary>
+
 1. Windows 安装 **Python 3.10+**，按[引擎安装说明](katago_engine/INSTALL.md)准备 KataGo、模型与兼容驱动。
 2. 在项目目录运行下方启动器，等待首次依赖安装，保持窗口开启。
 3. 打开 http://127.0.0.1:8000， 导入 [复盘演示](examples/review-demo.sgf) 或 [学习演示](examples/study-demo.sgf)。
@@ -79,6 +87,8 @@
 ```
 
 产品不需要 PyTorch；训练环境、复现命令见 [README-train.md](README-train.md)。源码不包含用户数据、虚拟环境或模型二进制，所有本机资源继续保留。
+
+</details>
 
 ---
 

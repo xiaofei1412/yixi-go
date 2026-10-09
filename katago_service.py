@@ -4,12 +4,11 @@ import subprocess
 import threading
 import uuid
 from concurrent.futures import Future, TimeoutError
-from pathlib import Path
+from product_paths import ENGINE_DIR, DATA_DIR, FROZEN
 
-ROOT = Path(__file__).resolve().parent
-ENGINE_FILES = [ROOT / "katago_engine/katago.exe",
-                ROOT / "katago_engine/kata1-b28c512nbt-s12192929536-d5655876072.bin.gz",
-                ROOT / "katago_engine/product_analysis.cfg"]
+ENGINE_FILES = [ENGINE_DIR / "katago.exe",
+                ENGINE_DIR / "kata1-b28c512nbt-s12192929536-d5655876072.bin.gz",
+                ENGINE_DIR / "product_analysis.cfg"]
 
 
 class EngineError(RuntimeError):
@@ -31,12 +30,18 @@ class KataGoEngine:
         exe, model, config = ENGINE_FILES
         if not exe.exists() or not model.exists():
             raise EngineError("缺少 KataGo 引擎或模型文件")
-        logs = ROOT / "product_data"
-        logs.mkdir(exist_ok=True)
+        logs = DATA_DIR
+        logs.mkdir(parents=True, exist_ok=True)
+        working_dir = DATA_DIR / 'engine' if FROZEN else ENGINE_DIR
+        working_dir.mkdir(parents=True, exist_ok=True)
+        command = [str(exe), "analysis", "-model", str(model), "-config", str(config)]
+        if FROZEN:
+            # KataGo otherwise writes tuning data beside its EXE, even with a new cwd.
+            command += ["-override-config", "homeDataDir=."]
         with (logs / "engine.log").open("ab") as log:
             self.proc = subprocess.Popen(
-                [str(exe), "analysis", "-model", str(model), "-config", str(config)],
-                cwd=str(ROOT / "katago_engine"), stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                command,
+                cwd=str(working_dir), stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                 stderr=log, text=True, encoding="utf-8", bufsize=1,
                 creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         threading.Thread(target=self._read, args=(self.proc,), daemon=True).start()
@@ -66,7 +71,7 @@ class KataGoEngine:
                 if self.proc is proc:
                     for future in self.pending.values():
                         if not future.done():
-                            future.set_exception(EngineError("KataGo 已退出，请重试；详情见 product_data/engine.log"))
+                            future.set_exception(EngineError(f"KataGo 已退出，请重试；详情见 {DATA_DIR / 'engine.log'}"))
 
     def query(self, payload, timeout=90):
         if not self.slots.acquire(timeout=5):

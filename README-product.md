@@ -285,3 +285,22 @@ node tests\test_frontend.cjs
 发布准备补齐 `.gitignore`，排除旧数据池、权重、扩展二进制、构建目录、本机日志及 KataGo 发行包，保留源码、配置与外部资源安装说明。所有本机资源仍然保留；公开的 `docs/results-summary.json` 只提取实验数值与口径，不含个人路径和用户棋谱。本次真实 Git 忽略规则检查得到 53 个候选文件，约 0.76 MiB，无超限大文件。
 
 本地 Markdown 预览、图片加载、文档链接、SVG 结构与图表数据核对通过。素材来源及生成方法见 [docs/SHOWCASE.md](docs/SHOWCASE.md)，VS Code 首次创建 GitHub 仓库、取得真实远程地址和后续同步步骤见 [docs/PUBLISH.md](docs/PUBLISH.md)，下载源码后的引擎准备见 [katago_engine/INSTALL.md](katago_engine/INSTALL.md)。目前尚未创建或上传远程仓库；本轮没有改变产品业务或重新执行模型训练，完成展示、发布范围与说明后最后更新本 README。
+
+## 2026-10-09：Windows EXE 与首个 Release
+
+用户完成 GitHub 上传后，本轮将发布目标确定为 [xiaofei1412/yixi-go](https://github.com/xiaofei1412/yixi-go)，本地 `origin` 已从旧的带前导连字符地址修正，并先同步用户在 GitHub 上的 README 修改。下载入口为 [v1.0.0 Release](https://github.com/xiaofei1412/yixi-go/releases/tag/v1.0.0)，附件名 `YixiGo-v1.0.0-windows-x64.zip`；源码包与可运行成品包分开提供。
+
+工作按以下顺序完成：
+
+1. 分离只读资源目录和可写用户目录。源码版保留原 `product_data/games.sqlite3`；EXE 版使用当前 Windows 账户的 `%LOCALAPPDATA%\YixiGo/games.sqlite3`，首次启动自动建立六张空表，不复制原有棋谱或练习记录。
+2. 新增 `desktop_launcher.py`，运行内置本地服务并打开浏览器，提供打开页面、打开数据目录和退出按钮。服务仅监听 `127.0.0.1`，自动分配端口；文件锁保证同一数据目录只启动一份服务，重复双击复用已有实例，退出时停止引擎。
+3. 新增 `scripts/build-windows.py`、直接依赖清单和完整版本锁。采用 PyInstaller 目录打包，内含 Python 3.10、静态页面、KataGo 1.16.4 OpenCL、b28 模型及 DLL；通过明确文件清单排除用户库、训练数据、学生权重和本机日志。随包附使用说明、第三方许可、逐文件哈希清单，Release 另附 ZIP 的 SHA-256。
+4. 首轮打包验收发现 KataGo 即使更改工作目录仍会在 EXE 旁写入调优缓存。对打包版设置 `homeDataDir=.`，让缓存落入私有数据目录的 `engine` 子目录，并补充回归测试。
+5. 从 ZIP 解压到含中文、空格和 `&` 的另一目录，以仅含 Windows System32 的 PATH 启动 EXE，使用独立空库完成页面资源、真实分析、练习答案和三栏对照验收。逐文件哈希确认程序目录运行前后不变，调优文件确实位于私有目录；另一空数据目录不包含首轮验收的演示棋谱。
+6. 实际检查启动器窗口布局、浏览器打开、重复启动复用和关闭后的服务退出。更新首页下载入口及 Windows 使用、备份、源码迁移和复现打包说明，最后更新本 README，再从提交后的干净工作区构建正式附件。
+
+本轮回归 **73 项 Python 测试通过**（原产品 62 项、原源码启动器 4 项、新桌面打包专项 7 项），真实 EXE 学习流程通过。打包验收使用公开演示 SGF 和独立临时目录；现有用户棋谱库与训练资源保留，未重新训练模型。前端业务代码本轮未修改。
+
+运行条件为 Windows 10/11 x64 和兼容 OpenCL 的显卡驱动，没有 CPU 后备引擎。首次显卡调优本机约 80 秒，其他硬件可能更久；未完成全新 Windows 机器和全显卡兼容认证，程序尚未代码签名。
+
+数据“私有”指不同电脑/Windows 账户在各自本地目录存储，不代表数据库加密或应用内多账号。同一 Windows 账户的多个程序副本共用数据；没有云同步。退出程序后复制数据目录即可备份，删除程序目录不会删除棋谱。完整操作与迁移步骤见 [docs/WINDOWS.md](docs/WINDOWS.md)。

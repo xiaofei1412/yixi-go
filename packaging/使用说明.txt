@@ -1,0 +1,29 @@
+弈习 1.0.0 · Windows x64 免安装版
+
+1. 将 ZIP 完整解压到任意可读目录，不要在压缩包内直接运行。
+2. 双击 YixiGo.exe，浏览器会自动打开弈习。无需安装 Python、Node.js 或另行下载模型。
+3. 保留启动器窗口；点击“退出”或关闭启动器窗口将停止本地服务。
+
+运行条件：Windows 10/11 64 位、支持 OpenCL 的显卡及厂商驱动。
+此包使用 KataGo 1.16.4 OpenCL 和 b28 模型，不包含 CPU 后备引擎。
+首次调用分析时可能需要显卡调优。若超时，请稍后重试；持续失败请检查显卡驱动和 engine.log。
+此版本未进行代码签名。可对照 Release 中 SHA256SUMS.txt 校验 ZIP；请从项目官方 Release 下载。
+
+数据与备份
+首次启动创建空棋谱库，不包含作者或其他用户的棋谱、笔记、训练结果。
+数据保存在当前 Windows 账户的 %LOCALAPPDATA%\YixiGo。
+点击启动器“打开数据目录”即可找到 games.sqlite3、launcher.log 和 engine.log。
+每台电脑、每个 Windows 账户独立保存；同一 Windows 账户多次运行共用一份数据库。
+没有云同步。数据库未加密，使用本机 Windows 文件权限；同一账户中的其他程序可能访问它。
+退出弈习后复制整个数据目录即可备份；恢复时先退出，再将备份放回此位置。
+更换或删除程序文件夹不会自动删除棋谱。升级前建议先备份数据。
+源码版仍使用项目内 product_data，不会自动迁入此版本。需要迁移时，退出两种版本后备份
+新数据目录，再将原 product_data\games.sqlite3 复制到新目录（会替换目标现有棋谱库）。
+
+服务仅监听本机 127.0.0.1，端口自动分配，浏览器中的页面属于本地服务。
+首次分析之后可以离线使用；GPU 驱动需由操作系统/显卡厂商提前安装。
+请勿将用户数据目录放入公开压缩包。
+
+项目：https://github.com/xiaofei1412/yixi-go
+反馈：https://github.com/xiaofei1412/yixi-go/issues
+随包第三方许可见 THIRD_PARTY；软件版本与文件哈希见 manifest.json。

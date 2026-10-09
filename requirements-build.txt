@@ -1,0 +1,2 @@
+-r requirements-product.txt
+pyinstaller==6.16.0
