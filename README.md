@@ -3,6 +3,7 @@
 </p>
 
 <p align="center">
+  <a href="https://xiaofei1412.github.io/yixi-go/">项目展示页</a> ·
   <a href="https://github.com/xiaofei1412/yixi-go/releases/latest">Windows 下载</a> ·
   <a href="README-product.md">产品使用</a> ·
   <a href="README-train.md">训练实验</a> ·

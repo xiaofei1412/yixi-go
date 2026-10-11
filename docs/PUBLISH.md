@@ -4,6 +4,8 @@
 
 当前远程仓库已是 [xiaofei1412/yixi-go](https://github.com/xiaofei1412/yixi-go)，本地 `origin` 已对齐该地址。Windows 成品下载见 [Releases](https://github.com/xiaofei1412/yixi-go/releases)，复现打包见 [WINDOWS.md](WINDOWS.md)；ZIP 作为 Release 附件上传，不提交进源码历史。
 
+项目展示页地址：[https://xiaofei1412.github.io/yixi-go/](https://xiaofei1412.github.io/yixi-go/)。GitHub Pages 从 `main` 分支的 `/docs` 发布，入口为 `docs/index.html`，`docs/.nojekyll` 保留原样静态文件。更新 HTML 或 `docs/assets` 后提交并推送，GitHub 会自动重新部署；此页面不运行本地 FastAPI 或 KataGo 服务。仓库 About 的简介、网站地址和 Topics 是 GitHub 元数据，在仓库设置中维护，不会随 README 自动改变。
+
 下文保留首次发布流程，供新副本或 fork 参考：**本地项目 → 本地 Git → GitHub 远程仓库**。这里的“远程”是 Git 的 `origin`，不需要 Remote-SSH；“GitHub Repositories”扩展的远程虚拟工作区也不是上传整个本地项目的必要步骤。[VS Code 工作方式说明](https://code.visualstudio.com/docs/sourcecontrol/github)
 
 ## 1. 上传哪些文件

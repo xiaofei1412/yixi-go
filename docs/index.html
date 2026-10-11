@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="弈习 Yixi Go：用 KataGo 复盘与练习，在本地保存棋谱；以小预算实践知识蒸馏、PPO 与对照评估。A local-first Go study workspace and a small-budget model training project.">
+  <meta name="theme-color" content="#193a32">
+  <meta property="og:title" content="弈习 Yixi Go · 把每一局，变成下一次进步。">
+  <meta property="og:description" content="KataGo 复盘与练习 × 小预算模型训练。下载 Windows 版，了解从蒸馏到 PPO 的实验过程。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://xiaofei1412.github.io/yixi-go/">
+  <meta property="og:image" content="https://xiaofei1412.github.io/yixi-go/assets/product-comparison.jpg">
+  <link rel="canonical" href="https://xiaofei1412.github.io/yixi-go/">
+  <title>弈习 Yixi Go · 围棋复盘、练习与模型训练</title>
+  <style>
+    :root{--paper:#f8f5ef;--ink:#193a32;--muted:#617168;--line:#dce1d6;--soft:#e9eddf;--accent:#a66637}
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.75 system-ui,"Microsoft YaHei",sans-serif}a{color:inherit;text-underline-offset:4px}a:hover{color:#976034}a:focus-visible{outline:3px solid var(--accent);outline-offset:5px}img{max-width:100%;display:block;height:auto}nav,main,footer{max-width:1160px;margin:auto;padding-left:32px;padding-right:32px}
+    .skip{position:absolute;top:-80px;left:20px;background:var(--ink);color:white;padding:10px 16px;z-index:2}.skip:focus{top:10px}nav{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-top:24px;padding-bottom:24px;border-bottom:1px solid var(--line)}.brand{font-size:24px;font-weight:750;text-decoration:none;white-space:nowrap}.brand span{font-size:12px;letter-spacing:.12em;margin-left:10px;font-weight:500}.nav-links{display:flex;gap:24px;font-size:14px}.nav-links a{text-decoration:none}
+    .hero{display:grid;grid-template-columns:1fr 1.1fr;gap:44px;align-items:center;padding:78px 0 66px}.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#5d735b}.pill{display:inline-block;padding:4px 12px;background:var(--soft);border-radius:20px;letter-spacing:.03em}h1{font-size:clamp(36px,4.3vw,57px);line-height:1.25;letter-spacing:-.045em;margin:22px 0}h2{font-size:clamp(27px,3vw,36px);line-height:1.4;letter-spacing:-.035em;margin:12px 0 16px}h3{font-size:20px;line-height:1.5;margin:12px 0 10px}p{margin:0 0 18px}.lead{font-size:18px;color:var(--muted)}.english{display:block;font-size:14px;color:var(--muted);letter-spacing:0;font-weight:400;margin-top:10px}.buttons{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 18px}.button{display:inline-block;padding:11px 20px;background:var(--ink);color:white;border:1px solid var(--ink);border-radius:7px;font-size:15px;font-weight:650;text-decoration:none}.button.secondary{background:transparent;color:var(--ink)}.button:hover{background:#31584a;color:white}.note{font-size:13px;color:var(--muted)}.preview{margin:0;padding:12px;background:white;border:1px solid var(--line);border-radius:14px;box-shadow:0 22px 55px #193a3210;transform:rotate(1deg)}.preview img{border-radius:5px}.preview figcaption{padding:13px 5px 3px;font-size:12px;color:var(--muted)}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:24px 0;gap:22px}.stats strong{font-size:27px;display:block;line-height:1.4}.stats span{font-size:13px;color:var(--muted)}section{padding:64px 0;border-bottom:1px solid var(--line)}.section-intro{max-width:650px;color:var(--muted)}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:28px}.card{padding:25px;background:#fff;border:1px solid var(--line);border-radius:12px}.number{font-size:12px;color:var(--accent);font-weight:700;letter-spacing:.08em}.card p{font-size:15px;color:var(--muted);margin:0}.comparison{margin:32px 0 0;padding:16px;background:#fff;border:1px solid var(--line);border-radius:12px}.comparison figcaption{padding:12px 4px 0;font-size:13px;color:var(--muted)}
+    .research{display:grid;grid-template-columns:1fr 1fr;gap:45px;align-items:center}.research figure{margin:0;padding:12px;background:white;border:1px solid var(--line);border-radius:12px}.research figcaption{padding:6px;font-size:12px;color:var(--muted)}.pipeline{display:flex;gap:8px;flex-wrap:wrap;margin:24px 0}.pipeline span{padding:5px 10px;background:var(--soft);border-radius:4px;font-size:13px}.result{padding:20px;border-left:3px solid var(--accent);background:#f0eadd;font-size:15px}.result strong{font-size:22px}.setup{display:grid;grid-template-columns:1.2fr 1fr;gap:36px;align-items:start}.checklist{margin:0;padding-left:21px;color:var(--muted)}.checklist li{padding-bottom:10px}.download-card{padding:28px;background:var(--ink);color:white;border-radius:12px}.download-card .note{color:#d0dbc9}.download-card .button{background:var(--soft);color:var(--ink);border-color:var(--soft)}.download-card a:not(.button){color:#e2e9da}code{font-size:13px;overflow-wrap:anywhere}footer{padding-top:28px;padding-bottom:28px;display:flex;justify-content:space-between;gap:18px;font-size:13px;color:var(--muted)}
+    @media(max-width:780px){nav,main,footer{padding-left:22px;padding-right:22px}.hero,.research,.setup{grid-template-columns:1fr;gap:30px}.hero{padding-top:42px;padding-bottom:42px}.preview{transform:none}.cards{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr);gap:20px}section{padding:44px 0}.nav-links{gap:14px}.nav-links .desktop{display:none}footer{flex-direction:column}.brand span{display:none}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">跳到主要内容</a>
+  <nav aria-label="主导航">
+    <a class="brand" href="#main">弈习 <span>YIXI GO</span></a>
+    <div class="nav-links"><a class="desktop" href="#product">学习产品</a><a class="desktop" href="#research">训练实验</a><a href="#download">下载</a><a href="https://github.com/xiaofei1412/yixi-go">GitHub ↗</a></div>
+  </nav>
+  <main id="main">
+    <div class="hero">
+      <div>
+        <div class="eyebrow"><span class="pill">v1.0.0 · LOCAL FIRST</span></div>
+        <h1>把每一局，<br>变成下一次进步。</h1>
+        <p class="lead">用 KataGo 找到值得重下的一手。<br>从复盘、练习到对照，把思考留在棋盘上。<span class="english" lang="en">Review your games. Practice your next move.</span></p>
+        <div class="buttons"><a class="button" href="https://github.com/xiaofei1412/yixi-go/releases/download/v1.0.0/YixiGo-v1.0.0-windows-x64.zip">下载 Windows 版 ↗</a><a class="button secondary" href="#product">看看学习流程 ↓</a></div>
+        <p class="note">完整解压 · 双击启动 · 棋谱本地保存<br>Windows 10/11 x64，需要兼容 OpenCL 的显卡驱动。</p>
+      </div>
+      <figure class="preview"><a href="assets/product-review.jpg"><img src="assets/product-review.jpg" alt="查看弈习实际复盘界面原图：棋盘、候选落点、目差走势与分支导航" width="1264" height="1500" style="aspect-ratio:1.08;object-fit:cover;object-position:top"></a><figcaption>真实产品界面 · 公开演示棋谱 · 点击查看完整原图。</figcaption></figure>
+    </div>
+    <div class="stats" aria-label="项目概览"><div><strong>9 / 13 / 19</strong><span>棋盘尺寸 · Play & review</span></div><div><strong>14,308</strong><span>教师状态 · 200 局采样</span></div><div><strong>6 组</strong><span>PPO 方案对照</span></div><div><strong>1,600 局</strong><span>统一评估与新样本复核</span></div></div>
+    <section id="product">
+      <div class="eyebrow">01 / A complete study loop</div>
+      <h2>复盘之后，还有下一步。</h2>
+      <p class="section-intro">对弈或导入 SGF，精选关键局面，独立作答后再看变化。笔记、手动标签与到期复习，串起每次练习。</p>
+      <div class="cards">
+        <article class="card"><span class="number">REVIEW / 复盘</span><h3>保留原谱，自由试下</h3><p>候选落点与走势辅助复盘；分支试下保留实战记录，支持 SGF 导入导出。</p></article>
+        <article class="card"><span class="number">PRACTICE / 重下</span><h3>先思考，再看参考</h3><p>把关键一手收进练习库。重新搜索核对答案，接近参考的其他下法也可通过。</p></article>
+        <article class="card"><span class="number">COMPARE / 对照</span><h3>三条变化，一起看清</h3><p>同步回放实战、自己的选择与引擎推荐，观察局面差异，再记录自己的理解。</p></article>
+      </div>
+      <figure class="comparison"><img src="assets/product-comparison.jpg" alt="实战落点、我的重下和引擎推荐的三栏变化同步对照" loading="lazy"><figcaption>三栏对照 · 左为棋谱记录，中、右为引擎推演；橙圈标出局面差异。<a href="https://github.com/xiaofei1412/yixi-go/blob/main/README-product.md">完整产品说明 ↗</a></figcaption></figure>
+    </section>
+    <section id="research" class="research">
+      <div>
+        <div class="eyebrow">02 / Small budget, measured progress</div>
+        <h2>也亲手训练一个，<br>能够解释结果的模型。</h2>
+        <p class="section-intro">约 32 万参数，以 KataGo 为教师，走完预训练、PPO 后训练和对照评估。每一步保留参数、日志与负结果。</p>
+        <div class="pipeline" aria-label="训练流程"><span>教师采样</span><span>多任务蒸馏</span><span>PPO + KL</span><span>配对评估</span></div>
+        <p class="result">预训练教师首选一致率<br><strong>2.91% → 27.37%</strong></p>
+        <p class="note">最终 PPO 候选新批次得分 56.25%，95% 区间 49.75%–62.75%，仍包含 50%。这是教师裁定得分，无 MCTS，不是段位或已证明的稳定棋力提升；训练模型未替换产品引擎。</p>
+        <a href="https://github.com/xiaofei1412/yixi-go/blob/main/README-train.md">查看实验与结果边界 ↗</a>
+      </div>
+      <figure><img src="assets/experiments.png" alt="六种 PPO 方案的教师裁定得分率与配对 95% 区间" loading="lazy"><figcaption>统一比较 1,200 局，再对两个候选做 400 局新样本复核。<br>每配置一个训练种子，结果保留不确定性。</figcaption></figure>
+    </section>
+    <section id="download" class="setup">
+      <div>
+        <div class="eyebrow">03 / Start on your own computer</div>
+        <h2>解压，打开，开始下一局。</h2>
+        <ol class="checklist"><li>下载约 279 MiB 的 Windows ZIP，完整解压。</li><li>双击 <code>YixiGo.exe</code>，浏览器自动打开本地软件。</li><li>开始对弈或导入棋谱，首次分析等待显卡调优。</li></ol>
+        <p class="note">Python、KataGo 和模型已内置。本版需要 OpenCL 显卡驱动，无 CPU 后备引擎。程序未代码签名，Release 提供 SHA-256 校验文件。</p>
+        <p class="note">本网站是静态项目展示页；对弈、分析与个人数据管理在下载的本地软件中运行。</p>
+      </div>
+      <div class="download-card"><h3>棋谱，留在你自己的电脑。</h3><p>首次启动创建空库。每台电脑、每个 Windows 账户独立保存棋谱与练习记录，没有云同步。</p><p class="note">数据目录：<code>%LOCALAPPDATA%\YixiGo</code><br>同一 Windows 账户共用数据；数据库未额外加密。退出软件后复制数据目录即可备份。</p><div class="buttons"><a class="button" href="https://github.com/xiaofei1412/yixi-go/releases/tag/v1.0.0">获取 v1.0.0 ↗</a></div><a href="https://github.com/xiaofei1412/yixi-go/blob/main/docs/WINDOWS.md">使用、备份与安装说明 →</a></div>
+    </section>
+  </main>
+  <footer><span>弈习 Yixi Go · 2026 · 围棋学习与训练实践</span><span><a href="https://github.com/xiaofei1412/yixi-go">源码</a> / <a href="https://github.com/xiaofei1412/yixi-go/blob/main/docs/PROJECT.md">项目经历</a> / <a href="https://github.com/xiaofei1412/yixi-go/issues">反馈</a></span></footer>
+</body>
+</html>
