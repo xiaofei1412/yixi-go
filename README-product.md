@@ -304,3 +304,15 @@ node tests\test_frontend.cjs
 运行条件为 Windows 10/11 x64 和兼容 OpenCL 的显卡驱动，没有 CPU 后备引擎。首次显卡调优本机约 80 秒，其他硬件可能更久；未完成全新 Windows 机器和全显卡兼容认证，程序尚未代码签名。
 
 数据“私有”指不同电脑/Windows 账户在各自本地目录存储，不代表数据库加密或应用内多账号。同一 Windows 账户的多个程序副本共用数据；没有云同步。退出程序后复制数据目录即可备份，删除程序目录不会删除棋谱。完整操作与迁移步骤见 [docs/WINDOWS.md](docs/WINDOWS.md)。
+
+## 2026-10-12：仓库 About、标签与 GitHub Pages
+
+参考 [EchoLens](https://github.com/xiaofei1412/EchoLens) 的仓库展示结构，补齐中英文简介、主题标签与独立展示页。本轮仅维护仓库展示和发布配置，未修改产品服务、训练逻辑或 v1.0.0 下载包。
+
+1. 将 GitHub About 更新为：**弈习：基于 KataGo 的本地围棋复盘与练习工具，附知识蒸馏与 PPO 训练实践。Local-first Go (Baduk) review and practice with KataGo, plus knowledge distillation and PPO training experiments.** 网站地址指向 [弈习展示页](https://xiaofei1412.github.io/yixi-go/)。
+2. 添加 10 个 Topics：`go-game`、`baduk`、`weiqi`、`katago`、`local-first`、`reinforcement-learning`、`knowledge-distillation`、`ppo`、`pytorch`、`fastapi`，同时覆盖围棋产品与模型训练两条路线。
+3. 新增 `docs/index.html` 与 `docs/.nojekyll`。展示页沿用米白、墨绿视觉，用真实产品截图、三步学习流程、实验图表和下载入口呈现关键内容；保留训练区间、硬件条件和本地数据边界。页面为纯静态介绍，实际对弈与分析在本地软件中运行。
+4. GitHub Pages 使用 `main` 分支 `/docs` 目录自动发布，HTTPS 已启用。根 README 增加展示页入口，`docs/PUBLISH.md` 补充后续维护方法；About 和 Topics 属于 GitHub 元数据，需要单独维护。
+5. 完成桌面与 390 像素窄屏浏览器检查，确认无横向溢出、图片加载与下载导航正常；检查 HTML 本地资源和锚点。首次 Pages 部署状态为成功，公开首页返回 HTTP 200，线上 HTML 与三张展示图片内容均与本地一致，About、网站地址与全部标签已通过 API 回读确认。
+
+完成以上实现和验收后，最后更新本 README 并提交同步。本轮没有运行无关的训练或产品业务测试；现有本地数据与 Release 保持原状。
