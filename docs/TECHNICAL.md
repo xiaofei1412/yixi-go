@@ -481,6 +481,8 @@ v1.0.0 内含 KataGo 1.16.4 OpenCL 与 `kata1-b28c512nbt-s12192929536-d565587607
 
 [GitHub Pages 展示页](https://xiaofei1412.github.io/yixi-go/) 从 `main/docs` 发布，入口 `docs/index.html`，`.nojekyll` 保留原样静态文件；仓库根目录的 `index.html` 才是本地产品页面。About、Topics 和网站地址属于 GitHub 元数据，修改 README 不会自动更新它们。
 
+展示页与仓库首页自 2026-11-05 起默认英文，中文分别为 `docs/zh-CN.html` 与根目录 `README.zh-CN.md`，顶部链接按钮互相切换。Pages 共用 `docs/showcase.css`，两页分别设置语言与搜索元数据；详细技术、产品、训练指南和实际软件界面仍为中文。展示素材英文版使用 `-en` 后缀，真实产品截图共用原图。
+
 `product_data`、训练原始数据、详细 run、旧数据池、虚拟环境、构建产物与下载的引擎二进制由 `.gitignore` 排除。公开的 [results-summary.json](results-summary.json) 是聚合实验数值，不含用户棋谱。上述发布情况来自既有交付记录，本轮未再次查询远端状态。
 
 ## 13. 验证与排错

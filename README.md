@@ -1,96 +1,104 @@
 <p align="center">
-  <img src="docs/assets/hero.svg" alt="弈习：把每一局变成下一次进步。KataGo 学习产品与小预算模型训练。" width="100%">
+  <a href="README.md" title="Current language"><img src="docs/assets/lang-en.svg" alt="English (current)" width="112" height="32"></a>
+  <a href="README.zh-CN.md"><img src="docs/assets/lang-zh.svg" alt="简体中文" width="112" height="32"></a>
 </p>
 
 <p align="center">
-  <a href="https://xiaofei1412.github.io/yixi-go/">项目展示页</a> ·
-  <a href="https://github.com/xiaofei1412/yixi-go/releases/latest">Windows 下载</a> ·
-  <a href="README-product.md">产品使用</a> ·
-  <a href="README-train.md">训练实验</a> ·
-  <a href="docs/PROJECT.md">项目经历</a> 
+  <img src="docs/assets/hero-en.svg" alt="Yixi Go: turn every game into your next improvement. A KataGo study app and a small-budget training project." width="100%">
 </p>
 
-**一个可以使用的围棋学习产品，一套可以解释结果的模型训练实践。**
+<p align="center">
+  <a href="https://xiaofei1412.github.io/yixi-go/">Project website</a> ·
+  <a href="https://github.com/xiaofei1412/yixi-go/releases/latest">Windows download</a> ·
+  <a href="README-product.md">Product guide</a> ·
+  <a href="README-train.md">Training experiments</a> ·
+  <a href="docs/TECHNICAL.md">Technical documentation</a> ·
+  <a href="docs/PROJECT.md">Project overview</a>
+</p>
 
-产品用 KataGo 帮助棋友复盘与练习；训练用小型学生网络实践蒸馏、PPO 和对照评估。
+**A practical Go study app. A model training project with results you can inspect.**
 
-| 9 / 13 / 19 路 |    14,308 个状态    |    6 组 PPO 对照    |       1,600 局评估       |
-| :------------: | :-----------------: | :-----------------: | :-----------------------: |
-| 对弈与分支复盘 | 来自 200 局教师棋谱 | 每组 3 轮，逐项诊断 | 最终比较 1,200 + 复核 400 |
+The app uses KataGo for game review and practice; the training track explores distillation, PPO, and controlled evaluation with a small student network.
 
-## 01 · 让复盘进入下一次练习
+<sub>The app UI and detailed guides are currently in Simplified Chinese. This overview and the project website are available in both languages.</sub>
 
-![学习流程：对弈或导入、复盘精选、独立重下、三栏对照、笔记与复习](docs/assets/learning-loop.gif)
+| 9 / 13 / 19 boards | 14,308 positions | 6 PPO configurations | 1,600 evaluation games |
+| :---: | :---: | :---: | :---: |
+| Play and variation review | From 200 teacher games | 3 rounds each, diagnosed step by step | 1,200 comparison + 400 confirmation |
 
-![实际产品截图：实战落点、我的重下和引擎推荐的三栏变化对照](docs/assets/product-comparison.jpg)
+## 01 · Turn game review into practice
 
-<sub>真实界面 · 独立演示库 · 人工构造 SGF。左为棋谱记录，中/右为引擎推演；橙圈显示局面差异。</sub>
+![Study workflow: play or import, select positions, retry independently, compare variations, take notes and review](docs/assets/learning-loop-en.gif)
 
-| 能力                      | 用户得到什么                                             |
-| ------------------------- | -------------------------------------------------------- |
-| **对弈 / 分支复盘** | 自动存档、SGF 导入导出、候选与走势，试下保留原谱         |
-| **精选 / 独立重下** | 复核实战落点，先思考后看答案，接近参考的其他下法也可通过 |
-| **三栏变化对照**    | 同步回放实战、自己的选择与推荐；观察提子与局面差异       |
-| **学习中心**        | 笔记、8 类手动标签、7/30 天统计、1/3/7 天到期复习        |
+![Actual app: synchronized comparison of the recorded continuation, the user's retry, and the engine recommendation](docs/assets/product-comparison.jpg)
+
+<sub>Actual Chinese UI · separate demo database · constructed SGF. Left: recorded continuation; middle/right: engine projections. Orange circles mark board differences.</sub>
+
+| Capability | What the player gets |
+| --- | --- |
+| **Play / variation review** | Autosave, SGF import/export, candidate moves and score trends; explore branches while preserving the game record |
+| **Select / retry** | Verify a move from your game, think before revealing the reference, and accept alternative moves with comparable estimated outcomes |
+| **Three-way comparison** | Replay the recorded line, your choice, and the recommendation together; inspect captures and board differences |
+| **Study center** | Notes, 8 manual topic labels, 7/30-day statistics, and reviews scheduled at 1/3/7-day intervals |
 
 <details>
-<summary>展开查看：完整对弈与复盘界面</summary>
+<summary>View the full play and review interface</summary>
 
-![实际复盘界面：棋谱、候选落点与目差走势](docs/assets/product-review.jpg)
+![Actual Chinese app UI: game record, candidate moves, and score trend](docs/assets/product-review.jpg)
 
 </details>
 
-## 02 · 从教师蒸馏，到可诊断的 PPO
+## 02 · From teacher distillation to diagnosable PPO
 
-![双路线架构：浏览器与本地服务调用 KataGo；教师数据进入蒸馏、PPO 和评估](docs/assets/architecture.svg)
+![Two tracks: a browser and local service use KataGo; teacher data feeds distillation, PPO, and evaluation](docs/assets/architecture-en.svg)
 
-**32 万参数 · 11 通道输入 · 策略 / 价值 / 目差 / 领地四项输出**
+**320K parameters · 11 input planes · policy / value / score / ownership outputs**
 
-| 预训练                                  | 后训练                      | 实验工程                         |
-| --------------------------------------- | --------------------------- | -------------------------------- |
-| 多任务蒸馏、D4 增强、混合精度           | PPO clip + 冻结参考 KL      | 来源哈希、断点恢复、完整逐轮日志 |
-| 教师首选一致率**2.91% → 27.37%** | 教师监督重放 / 价值梯度隔离 | 同开局交换黑白、区间与新样本复核 |
+| Pretraining | Post-training | Experiment engineering |
+| --- | --- | --- |
+| Multitask distillation, D4 augmentation, mixed precision | PPO clipping + KL to a frozen reference | Source hashes, checkpoint recovery, per-round logs |
+| Teacher top-move agreement **2.91% → 27.37%** | Teacher-supervised replay / value-gradient isolation | Shared openings, swapped colors, intervals, fresh-opening confirmation |
 
-![六种 PPO 方案与配对 95% 区间，教师监督观察得分最高](docs/assets/experiments.png)
+![Six PPO configurations with paired 95% intervals; teacher-supervised replay has the highest observed score](docs/assets/experiments-en.png)
 
-**最终保留：教师监督 0.1 的 PPO 候选，同时保留预训练基线。** 新批次 200 局得分 **56.25%**，95% 区间 **49.75%～62.75%**；较早一批为 **48.25%**，完整保留负结果。
+**Retained: the PPO candidate with teacher replay weight 0.1, alongside the pretrained baseline.** It scored **56.25%** in a fresh 200-game batch, with a 95% interval of **49.75%–62.75%**; an earlier batch scored **48.25%**. Negative results are preserved.
 
-<sub>以上是对预训练模型的教师裁定得分率，无 MCTS，不是段位或正式胜率。每配置一个训练种子；验证集约 8.9% 的行共享早期开局。当前按预算收尾，尚未证明稳定优势或数学收敛。 · </sub>
+<sub>Scores are teacher-adjudicated against the pretrained reference, without MCTS—not official win rates or ranks. Each configuration has one training seed; about 8.9% of validation rows share early positions with training. This is a budget-bounded stopping decision; stable superiority and mathematical convergence have not been established. The student model does not power the product.</sub>
 
-## 03 · 值得展开讲的工程细节
+## 03 · Engineering decisions worth discussing
 
-| 问题                        | 实际解决方式                                        |
-| --------------------------- | --------------------------------------------------- |
-| 只采到黑方状态              | 逐手保存，并检查采集、续采及两个数据分区的黑白覆盖  |
-| 扩采也扩大了更新预算        | 用 batch 对照控制更新次数，再分别测试重放与价值梯度 |
-| 原谱变化 / 重复提交影响练习 | 独立快照、可重试且不重复计次的提交、引擎身份缓存    |
-| 换电脑后 Python 路径失效    | 启动前实际探测解释器，保留旧环境并在本机重建        |
+| Problem | Implementation |
+| --- | --- |
+| Sampling saved only Black's positions | Save every move and check color coverage during collection, resumption, and loading of both data partitions |
+| More rollout games also meant more updates | Control update counts through batch size, then test replay and value gradients separately |
+| Edited records / repeated submissions affected practice | Independent snapshots, idempotent submissions, and caches tied to engine identity |
+| Copied Python environments failed on another PC | Probe the interpreter, preserve invalid environments, and rebuild locally; also ship a standalone Windows bundle |
 
-`FastAPI` · `SQLite` · `原生 JavaScript / Canvas` · `KataGo` · `PyTorch` · `保留的 C++ MCTS`
+`FastAPI` · `SQLite` · `JavaScript / Canvas` · `KataGo` · `PyTorch` · `Preserved C++ MCTS`
 
-已记录阶段验收：**62 项产品 Python 测试 · 21 组前端检查 · 4 项启动器测试 · 30 项训练测试**，另有真实引擎与训练审计。当前为本地单用户版本；截图覆盖桌面演示流程，完整浏览器与移动端验收仍待补充。
+Historical validation: **73 product/launcher Python tests · 21 frontend checks · 30 training tests**, plus real-engine integration and training audits. Desktop checks cover selected app flows; the website also has a narrow-screen layout check. Full browser compatibility and mobile touch validation of the app remain open. The app runs locally for a single user.
 
-## 开始体验
+## Get started
 
-**免安装版：**[下载 Windows x64 压缩包](https://github.com/xiaofei1412/yixi-go/releases/download/v1.0.0/YixiGo-v1.0.0-windows-x64.zip)，完整解压后双击 `YixiGo.exe`，浏览器自动打开。
+**Standalone build:** [download the Windows x64 ZIP](https://github.com/xiaofei1412/yixi-go/releases/download/v1.0.0/YixiGo-v1.0.0-windows-x64.zip), extract the entire folder, then double-click `YixiGo.exe`. Your browser opens automatically.
 
-内含 Python、KataGo 和模型；需要 Windows 10/11 x64 与支持 OpenCL 的显卡驱动。首次启动创建空库，棋谱独立保存在当前账户的 `%LOCALAPPDATA%\YixiGo`，没有云同步。首次分析可能需要显卡调优。详情见[桌面版说明](docs/WINDOWS.md)。
+Python, KataGo, and the model are included. Requires Windows 10/11 x64 and a compatible OpenCL GPU driver. First launch creates an empty database under the current account's `%LOCALAPPDATA%\YixiGo`; there is no cloud sync. The first analysis may need GPU tuning. See the [desktop guide (Chinese)](docs/WINDOWS.md).
 
 <details>
-<summary>从源码运行 / 参与开发</summary>
+<summary>Run from source / contribute</summary>
 
-1. Windows 安装 **Python 3.10+**，按[引擎安装说明](katago_engine/INSTALL.md)准备 KataGo、模型与兼容驱动。
-2. 在项目目录运行下方启动器，等待首次依赖安装，保持窗口开启。
-3. 打开 http://127.0.0.1:8000， 导入 [复盘演示](examples/review-demo.sgf) 或 [学习演示](examples/study-demo.sgf)。
+1. Install **Python 3.10+** on Windows, then prepare KataGo, its model, and a compatible driver using the [engine setup guide (Chinese)](katago_engine/INSTALL.md).
+2. Run the launcher below from the project folder, allow initial dependency installation, and keep its window open.
+3. Open http://127.0.0.1:8000 and import the [review demo](examples/review-demo.sgf) or [study demo](examples/study-demo.sgf).
 
 ```powershell
 .\start-product.cmd
 ```
 
-产品不需要 PyTorch；训练环境、复现命令见 [README-train.md](README-train.md)。源码不包含用户数据、虚拟环境或模型二进制，所有本机资源继续保留。
+The product does not require PyTorch. Training setup and reproduction commands are in the [training guide (Chinese)](README-train.md). The source repository excludes user data, virtual environments, and model binaries.
 
 </details>
 
 ---
 
-[产品与规则说明](README-product.md) · [训练与结果边界](README-train.md) · [项目叙事与面试要点](docs/PROJECT.md)
+[Product and rules (Chinese)](README-product.md) · [Training and result limits (Chinese)](README-train.md) · [Technical documentation (Chinese)](docs/TECHNICAL.md) · [Project overview (Chinese)](docs/PROJECT.md)

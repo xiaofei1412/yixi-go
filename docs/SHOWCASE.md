@@ -2,9 +2,11 @@
 
 [返回首页](../README.md)
 
-已完成本地 Markdown 渲染预览、图片加载及链接检查；尚未上传真实 GitHub，发布后再核对最终页面。
+仓库首页与 GitHub Pages 已发布。本轮维护增加默认英文与中文两版展示，具体版本及验收记录见 [README-product.md](../README-product.md)。
 
 首页使用 GitHub 可直接显示的 Markdown、简单 HTML、仓库内 SVG/PNG/JPEG 和 GIF，无自定义脚本、外部字体或在线徽章服务。动画只按顺序强调五个学习环节，播放有限次数，最后停在完整静态流程；[静态版本](assets/learning-loop.png)可单独查看。
+
+`README.md` 为默认英文，`README.zh-CN.md` 为中文，顶部语言按钮使用仓库内 `lang-en.svg` 和 `lang-zh.svg`。英文封面、架构、流程和实验图使用 `-en` 后缀；中文保留原素材。真实产品 JPG 共用，图中软件界面仍为中文，不通过改图伪造英文界面。
 
 ## 素材来源
 
@@ -28,6 +30,8 @@
 
 ```powershell
 python scripts/build-showcase.py
+# 只生成英文素材和语言按钮，保留原中文图片
+python scripts/build-showcase.py --lang en
 ```
 
 脚本仅重建封面、架构、流程动画和实验图，不训练、不调用引擎、不重拍截图。Windows 默认使用微软雅黑；其他环境可通过 `SHOWCASE_FONT` 指定已安装的中文字体文件。更新实验图时先核实 `results-summary.json`，保留评估协议与区间。
